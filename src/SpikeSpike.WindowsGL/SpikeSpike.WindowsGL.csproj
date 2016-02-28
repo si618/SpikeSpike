@@ -57,6 +57,9 @@
     <Compile Include="..\SpikeSpike.WindowsDX\Properties\SpikeSpikeAssemblyInfo.cs">
       <Link>Properties\SpikeSpikeAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\SpikeSpike.WindowsDX\Spike.cs">
+      <Link>Spike.cs</Link>
+    </Compile>
     <Compile Include="..\SpikeSpike.WindowsDX\SpikeSpike.cs">
       <Link>SpikeSpike.cs</Link>
     </Compile>

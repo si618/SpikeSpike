@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 // Shared amongst projects
@@ -14,18 +15,29 @@ namespace SpikeSpike
         public int SpikeX { get; } = 50;
         public int SpikeWidth { get; }
         public int SpikeHeight { get; }
+        public Keys Trigger { get; }
+
+        public float Y { get; set; }
+        // ReSharper disable once InconsistentNaming
+        public float DY { get; set; }
+        public float SpriteTimer { get; set; }
+        public int SpriteIndex { get; set; }
+        public bool IsJumping { get; set; }
 
         public Spike(SpriteTexture spriteTexture, Keys trigger, int startBottom)
         {
             SpikeWidth = spriteTexture.SpriteWidth;
             SpikeHeight = spriteTexture.Texture.Height;
+            Trigger = trigger;
 
-            Y = single(startBottom - SpikeHeight);
+            Y = startBottom - SpikeHeight;
             DY = 0.0f;
             IsJumping = false;
             SpriteTimer = 0.0f;
             SpriteIndex = 0;
         }
+
+        public Rectangle Bounds => new Rectangle(SpikeX, (int) Y, SpikeWidth, SpikeHeight);
 
         /*
             type Santa(spriteTexture : SpriteTexture, trigger, startBottom) =
