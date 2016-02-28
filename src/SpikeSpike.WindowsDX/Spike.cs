@@ -95,7 +95,7 @@ namespace SpikeSpike
                 SpriteTimer = SpriteTimer + deltaTime;
                 const float spriteChangeTime = 80.0f;
                 if (SpriteTimer < spriteChangeTime) return;
-                SpriteTimer = -0.0f;
+                SpriteTimer = 0;
                 var value = SpriteIndex + 1;
                 var max = SpriteTexture.NumSprites - 1;
                 SpriteIndex = value < max ? value : 0;
