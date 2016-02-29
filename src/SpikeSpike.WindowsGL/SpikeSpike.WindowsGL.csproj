@@ -45,11 +45,17 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\SpikeSpike.WindowsDX\Constants.cs">
+      <Link>Constants.cs</Link>
+    </Compile>
     <Compile Include="..\SpikeSpike.WindowsDX\FontRendering.cs">
       <Link>FontRendering.cs</Link>
     </Compile>
     <Compile Include="..\SpikeSpike.WindowsDX\GameState.cs">
       <Link>GameState.cs</Link>
+    </Compile>
+    <Compile Include="..\SpikeSpike.WindowsDX\Obstacle.cs">
+      <Link>Obstacle.cs</Link>
     </Compile>
     <Compile Include="..\SpikeSpike.WindowsDX\Program.cs">
       <Link>Program.cs</Link>

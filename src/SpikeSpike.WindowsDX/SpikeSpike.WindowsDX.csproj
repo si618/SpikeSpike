@@ -44,8 +44,10 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="FontRendering.cs" />
+    <Compile Include="Obstacle.cs" />
     <Compile Include="Spike.cs" />
     <Compile Include="SpikeSpike.cs" />
     <Compile Include="Program.cs" />

@@ -6,13 +6,10 @@ using Microsoft.Xna.Framework.Input;
 
 // Shared amongst projects
 // ReSharper disable once CheckNamespace
-
 namespace SpikeSpike
 {
     public class Spike
     {
-        private const float Gravity = 0.02f;
-
         public Spike(SpriteTexture spriteTexture, Keys trigger, int startBottom)
         {
             SpriteTexture = spriteTexture;
@@ -40,13 +37,6 @@ namespace SpikeSpike
 
         public Rectangle Bounds => new Rectangle(SpikeX, (int)Y, SpikeWidth, SpikeHeight);
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            var spriteBounds = new Rectangle(SpriteIndex * SpriteTexture.SpriteWidth, 0,
-                SpriteTexture.SpriteWidth, SpriteTexture.Texture.Height);
-            spriteBatch.Draw(SpriteTexture.Texture, Bounds, spriteBounds, Color.White);
-        }
-
         // Used for pixel-perfect collision detection.
         public bool AnyNonTransparentPixels(int x1, int x2, int y1, int y2)
         {
@@ -63,6 +53,13 @@ namespace SpikeSpike
             return pixelsInsideRegion.Any(c => c != Color.Transparent);
         }
 
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            var spriteBounds = new Rectangle(SpriteIndex * SpriteTexture.SpriteWidth, 0,
+                SpriteTexture.SpriteWidth, SpriteTexture.Texture.Height);
+            spriteBatch.Draw(SpriteTexture.Texture, Bounds, spriteBounds, Color.White);
+        }
+
         public void Update(float deltaTime, Keys isKeyPressedSinceLastFrame, Rectangle trackBounds)
         {
             // Should we start a jump?
@@ -75,7 +72,7 @@ namespace SpikeSpike
             if (IsJumping)
             {
                 // Physics!
-                Y = -Y + DY * deltaTime;
+                Y = Y + DY * deltaTime;
 
                 var hasLanded = (int)Y + SpikeHeight >= trackBounds.Bottom;
                 if (hasLanded)
@@ -86,7 +83,7 @@ namespace SpikeSpike
                 }
                 else
                 {
-                    DY = -DY + Gravity;
+                    DY = -DY + Constants.Gravity;
                 }
             }
             else
