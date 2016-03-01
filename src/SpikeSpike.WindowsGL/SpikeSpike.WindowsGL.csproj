@@ -72,6 +72,9 @@
     <Compile Include="..\SpikeSpike.WindowsDX\SpriteTexture.cs">
       <Link>SpriteTexture.cs</Link>
     </Compile>
+    <Compile Include="..\SpikeSpike.WindowsDX\Track.cs">
+      <Link>Track.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

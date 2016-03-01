@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 
 // Shared amongst projects
 // ReSharper disable once CheckNamespace
+
 namespace SpikeSpike
 {
     [Serializable]
@@ -193,7 +194,7 @@ namespace SpikeSpike
         {
             var deserializer = new XmlSerializer(typeof (FontFile));
             TextReader textReader = new StreamReader(filename);
-            var file = (FontFile) deserializer.Deserialize(textReader);
+            var file = (FontFile)deserializer.Deserialize(textReader);
             textReader.Close();
             return file;
         }

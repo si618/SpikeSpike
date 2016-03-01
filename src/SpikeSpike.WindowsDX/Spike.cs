@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 // Shared amongst projects
 // ReSharper disable once CheckNamespace
+
 namespace SpikeSpike
 {
     public class Spike
