@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 // Shared amongst projects
 // ReSharper disable once CheckNamespace
 
-namespace SpikeSpike.WindowsDX
+namespace SpikeSpike
 {
     public class Obstacle
     {
@@ -27,7 +27,7 @@ namespace SpikeSpike.WindowsDX
         public Rectangle GetBounds(Rectangle trackBounds) =>
             new Rectangle((int)X, trackBounds.Bottom - Height, Width, Height);
 
-        public void Update(float deltaTime) => X = X + Constants.Speed * deltaTime;
+        public void Update(float deltaTime) => X += Constants.Speed * deltaTime;
 
         public void Draw(SpriteBatch spriteBatch, Texture2D texture, Rectangle trackBounds) =>
             spriteBatch.Draw(texture, GetBounds(trackBounds), Color.Green);
@@ -37,7 +37,7 @@ namespace SpikeSpike.WindowsDX
         {
             var head = obstacles?.FirstOrDefault();
             var isHeadFullyVisible = head != null
-                && head.GetBounds(trackBounds).Right < trackBounds.Right;
+                                     && head.GetBounds(trackBounds).Right < trackBounds.Right;
             if (!isHeadFullyVisible)
             {
                 return;

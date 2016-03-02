@@ -1,47 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
-namespace SpikeSpike.WindowsDX
+// Shared amongst projects
+// ReSharper disable once CheckNamespace
+
+namespace SpikeSpike
 {
     public class Track
     {
+        public Track(Color color, Rectangle bounds, SpriteTexture spriteTexture, Keys triggerKey)
+        {
+            Color = color;
+            Bounds = bounds;
+            SpriteTexture = spriteTexture;
+            TriggerKey = triggerKey;
+            Obstacles = new List<Obstacle>();
+            AvoidedObstacles = 0;
+            Spike = new Spike(spriteTexture, triggerKey, bounds.Bottom);
+        }
 
+        public int AvoidedObstacles { get; private set; }
+        public List<Obstacle> Obstacles { get; }
+        public Spike Spike { get; }
+        public Color Color { get; }
+        public Rectangle Bounds { get; }
+        public SpriteTexture SpriteTexture { get; }
+        public Keys TriggerKey { get; }
+
+        public void Update(float deltaTime, Keys isKeyPressedSinceLastFrame, Rectangle bounds)
+        {
+            Spike.Update(deltaTime, isKeyPressedSinceLastFrame, bounds);
+            Obstacles.ForEach(obstacle => obstacle.Update(deltaTime));
+            var oldObstaclesCount = Obstacles.Count(obstacle => !obstacle.Visible);
+            AvoidedObstacles += oldObstaclesCount;
+            Obstacle.RemoveOldObstacles(Obstacles);
+            Obstacle.AddNewObstacles(bounds, Obstacles);
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture, FontRenderer fontRenderer)
+        {
+            spriteBatch.Draw(texture, Bounds, Color); // Track background
+            Obstacles.ForEach(obstacle => obstacle.Draw(spriteBatch, texture, Bounds));
+            Spike.Draw(spriteBatch);
+            fontRenderer.DrawText(spriteBatch, 10, 10 + Bounds.Y, TriggerKey.ToString());
+        }
+
+        public bool HasCollision()
+        {
+            return false; //TODO:
+        }
+
+        public static void CreateTacks(Rectangle gameBounds)
+        {
+        }
     }
+
     /*
-    type Track(color, bounds : Rectangle, spriteTexture, triggerKey) =
-        let mutable obstacles = List.empty<Obstacle>
-        let mutable avoidedObstacles = 0
-        let santa = Santa(spriteTexture, triggerKey, bounds.Bottom)
-
-        member this.AvoidedObstacles
-            with get() = avoidedObstacles
-
-        member this.Update(deltaTime, isKeyPressedSinceLastFrame) =
-            santa.Update(deltaTime, isKeyPressedSinceLastFrame, bounds)
-
-            for obstacle in obstacles do
-                obstacle.Update(deltaTime)
-
-            let oldObstaclesCount =
-                obstacles
-                |> List.filter (fun o -> not o.Visible)
-                |> List.length
-            avoidedObstacles <- avoidedObstacles + oldObstaclesCount
-
-            obstacles <- obstacles
-                |> Obstacle.removeOldObstacles
-                |> Obstacle.addNewObstacles bounds
-
-        member this.Draw(spriteBatch : SpriteBatch, texture, fontRenderer : FontRendering.FontRenderer) =
-            spriteBatch.Draw(texture, bounds, color) // Track background
-            for obstacle in obstacles do
-                obstacle.Draw(spriteBatch, texture, bounds)
-            santa.Draw(spriteBatch)
-            fontRenderer.DrawText(spriteBatch, 10, 10 + bounds.Y, triggerKey.ToString())
-
         member this.HasCollisions() =
             let santaBounds = santa.Bounds
 
@@ -82,5 +99,4 @@ namespace SpikeSpike.WindowsDX
 
             List.init numTracks makeTrack
     */
-
 }
