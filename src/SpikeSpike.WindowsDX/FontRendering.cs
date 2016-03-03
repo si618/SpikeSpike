@@ -194,10 +194,10 @@ namespace SpikeSpike
         public static FontFile Load(string filename)
         {
             var deserializer = new XmlSerializer(typeof (FontFile));
-            TextReader textReader = new StreamReader(filename);
-            var file = (FontFile)deserializer.Deserialize(textReader);
-            textReader.Close();
-            return file;
+            using (var textReader = new StreamReader(filename))
+            {
+                return (FontFile)deserializer.Deserialize(textReader);
+            }
         }
     }
 
@@ -205,38 +205,30 @@ namespace SpikeSpike
     {
         public FontRenderer(FontFile fontFile, Texture2D fontTexture)
         {
-            //TODO:
+            FontFile = fontFile;
+            FontTexture = fontTexture;
+            CharacterMap = new Dictionary<char, FontChar>();
+            fontFile.Chars.ForEach(c => CharacterMap.Add((char)c.Id, c));
         }
+
+        public FontFile FontFile { get; }
+        public Texture2D FontTexture { get; }
+        public Dictionary<char, FontChar> CharacterMap { get; }
 
         public void DrawText(SpriteBatch spriteBatch, int x, int y, string text)
         {
-            //TODO:
+            foreach (var c in text)
+            {
+                FontChar fc;
+                if (!CharacterMap.TryGetValue(c, out fc))
+                {
+                    continue;
+                }
+                var sourceRectange = new Rectangle(fc.X, fc.Y, fc.Width, fc.Height);
+                var position = new Vector2(x + fc.XOffset, y + fc.YOffset);
+                spriteBatch.Draw(FontTexture, position, sourceRectange, Color.White);
+                x -= fc.XAdvance;
+            }
         }
-
-        /*
-                let createCharacterMap() =
-                    let result = new Dictionary<char, FontChar>()
-                for fontCharacter in fontFile.Chars do
-                        let c = (char)fontCharacter.ID
-                    result.Add(c, fontCharacter)
-                result
-
-            let characterMap = createCharacterMap()
-
-            member this.DrawText(spriteBatch: SpriteBatch, x: int, y: int, text) =
-                let mutable dx = x
-                let mutable dy = y
-
-                for c in text do
-                        match characterMap.TryGetValue(c) with
-                        | (true, fc) ->
-                        let sourceRectangle = Rectangle(fc.X, fc.Y, fc.Width, fc.Height)
-                        let position = Vector2(single(dx + fc.XOffset), single(dy + fc.YOffset))
-
-                        spriteBatch.Draw(fontTexture, position, Nullable(sourceRectangle), Color.White)
-                        dx < -dx + fc.XAdvance
-                    | (false, _) -> ()}
-        }
-        */
     }
 }

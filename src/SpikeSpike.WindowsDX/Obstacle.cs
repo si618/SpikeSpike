@@ -38,10 +38,7 @@ namespace SpikeSpike
             var head = obstacles?.FirstOrDefault();
             var isHeadFullyVisible = head != null
                                      && head.GetBounds(trackBounds).Right < trackBounds.Right;
-            if (!isHeadFullyVisible)
-            {
-                return;
-            }
+            if (!isHeadFullyVisible) return;
             var rng = new Random();
             var x = trackBounds.Right + 200 + rng.Next(200);
             var width = rng.Next(Constants.MinObstacleWidth, Constants.MaxObstacleWidth);

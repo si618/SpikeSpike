@@ -50,53 +50,42 @@ namespace SpikeSpike
 
         public bool HasCollision()
         {
-            return false; //TODO:
+            var obstaclesCollidingWithSanta = Obstacles.
+                Where(obstacle =>
+                {
+                    var spikeBounds = Spike.Bounds;
+                    var obstacleBounds = obstacle.GetBounds(Bounds);
+                    if (!spikeBounds.Intersects(obstacleBounds)) return false;
+                    // Do pixel-perfect collision detection as bounding rectangles overlap.
+                    var x1 = obstacleBounds.X - spikeBounds.X;
+                    var x2 = obstacleBounds.Right - spikeBounds.X;
+                    var y1 = obstacleBounds.Y - spikeBounds.Y;
+                    var y2 = obstacleBounds.Bottom - spikeBounds.Y;
+                    return Spike.AnyNonTransparentPixels(x1, x2, y1, y2);
+                });
+
+            return obstaclesCollidingWithSanta.Any();
         }
 
-        public static void CreateTacks(Rectangle gameBounds)
+        public static IEnumerable<Track> CreateTacks(Rectangle gameBounds,
+            SpriteTexture spriteTexture, int numTracks)
         {
+            const int padding = 10;
+            var totalPadding = (numTracks - 1) * padding;
+            var availableHeight = gameBounds.Height - totalPadding;
+            var trackHeight = availableHeight / numTracks;
+            var colors = new[] {Color.Red, Color.Blue, Color.Purple, Color.Brown, Color.Gold};
+            var keys = new[] {Keys.A, Keys.S, Keys.D, Keys.F, Keys.Space};
+            var tracks = new List<Track>();
+            for (var index = 0; index < numTracks; index++)
+            {
+                var trackbounds = new Rectangle(0, index * (trackHeight + padding),
+                    gameBounds.Width, trackHeight);
+                var track = new Track(colors[index], trackbounds, spriteTexture,
+                    keys[index + (keys.Length - numTracks)]);
+                tracks.Add(track);
+            }
+            return tracks;
         }
     }
-
-    /*
-        member this.HasCollisions() =
-            let santaBounds = santa.Bounds
-
-            let obstacleCollidingWithSanta (obstacle : Obstacle) =
-                // First do simple intersection.
-                let obstacleBounds = obstacle.GetBounds(bounds)
-
-                if santaBounds.Intersects(obstacleBounds) then
-                    // If the bounding rectangles overlap, then do pixel-perfect collision detection.
-                    let x1 = max (obstacleBounds.X - santaBounds.X) 0
-                    let x2 = min (obstacleBounds.Right - santaBounds.X) santaBounds.Width
-
-                    let y1 = max (obstacleBounds.Y - santaBounds.Y) 0
-                    let y2 = min (obstacleBounds.Bottom - santaBounds.Y) santaBounds.Height
-
-                    santa.AnyNonTransparentPixels(x1, x2, y1, y2)
-                else
-                    false
-
-            List.exists obstacleCollidingWithSanta obstacles
-
-    [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-    module Track =
-        let createTracks (gameBounds : Rectangle) spriteTexture numTracks =
-            let padding = 10
-            let totalPadding = (numTracks - 1) * padding
-            let availableHeight = gameBounds.Height - totalPadding
-            let trackHeight = availableHeight / numTracks
-
-            let colors = [ Color.Red; Color.Blue; Color.Purple; Color.Brown; Color.Gold ]
-            let keys = [ Keys.A; Keys.S; Keys.D; Keys.F; Keys.Space ]
-
-            let makeTrack i =
-                let trackBounds = Rectangle(0, i * (trackHeight + padding),
-                                            gameBounds.Width, trackHeight)
-                Track(colors.[i], trackBounds, spriteTexture,
-                      keys.[i + (keys.Length - numTracks)])
-
-            List.init numTracks makeTrack
-    */
 }
