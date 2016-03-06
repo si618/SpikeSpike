@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -9,8 +10,14 @@ namespace SpikeSpike
 {
     public class SpikeSpike : Game
     {
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private Texture2D _texture;
+        private SpriteTexture _spriteTexture;
+        private FontRenderer _fontRenderer;
+        //private IEnumerable<Track> _tracks;
+        //private GameState _gameState;
+        //private KeyboardState _lastKeyState;
 
         public SpikeSpike()
         {
@@ -21,50 +28,40 @@ namespace SpikeSpike
             };
             Content.RootDirectory = "Content";
             Window.Title = "Spike Spike";
-            _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
-            /*
-            type MakeSantaJumpGame() as this =
-                let mutable spriteBatch = Unchecked.defaultof<SpriteBatch>
-                let mutable texture = Unchecked.defaultof<Texture2D>
-                let mutable spriteTexture = Unchecked.defaultof<SpriteTexture>
-                let mutable fontRenderer = Unchecked.defaultof<FontRendering.FontRenderer>
-
-                let mutable tracks = []
-                let mutable gameState = MainMenu
-                let mutable lastKeyState = KeyboardState()
-            */
         }
 
         /// <summary>
-        ///     LoadContent will be called once per game and is the place to load all of your content.
+        /// LoadContent will be called once per game and is the place to load all of your content.
         /// </summary>
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _texture = new Texture2D(GraphicsDevice, 1, 1);
+            _texture.SetData(new [] { Color.White });
 
-            // TODO: use this.Content to load your game content here
-            /*
-            override this.LoadContent() =
-                spriteBatch <- new SpriteBatch(this.GraphicsDevice)
-
-                texture <- new Texture2D(this.GraphicsDevice, 1, 1)
-                texture.SetData([| Color.White |])
-
-                use santaStream = System.IO.File.OpenRead("Santa.png")
-                let santaTexture = Texture2D.FromStream(this.GraphicsDevice, santaStream)
-                let santaTextureData = Array.create<Color> (santaTexture.Width * santaTexture.Height) Color.Transparent
-                santaTexture.GetData(santaTextureData)
-                spriteTexture <- { texture = santaTexture;
-                                   textureData = santaTextureData;
-                                   spriteWidth = santaTexture.Width / 8;
-                                   numSprites = 8 }
-
-                use fontTextureStream = System.IO.File.OpenRead("GameFont_0.png")
-                let fontTexture = Texture2D.FromStream(this.GraphicsDevice, fontTextureStream)
-                let fontFile = FontRendering.FontLoader.Load("GameFont.fnt")
-                fontRenderer <- FontRendering.FontRenderer(fontFile, fontTexture)
-            */
+            using (var spikeStream = System.IO.File.OpenRead("Santa.png"))
+            {
+                var spikeTexture = Texture2D.FromStream(GraphicsDevice, spikeStream);
+                var spikeTextureData = new[]
+                {
+                    new Color(Color.Transparent, spikeTexture.Width * spikeTexture.Height)
+                };
+                spikeTexture.GetData(spikeTextureData);
+                _spriteTexture = new SpriteTexture()
+                {
+                    Texture = spikeTexture,
+                    TextureData = spikeTextureData,
+                    SpriteWidth = spikeTexture.Width / 8,
+                    NumSprites = 8,
+                };
+                using (var fontTextureStream = System.IO.File.OpenRead("GameFontImage.png"))
+                {
+                    var fontTexture = Texture2D.FromStream(GraphicsDevice, fontTextureStream);
+                    var fontFile = FontLoader.Load("GameFont.fnt");
+                    _fontRenderer = new FontRenderer(fontFile, fontTexture);
+                }
+            }
         }
 
         /// <summary>
@@ -80,12 +77,13 @@ namespace SpikeSpike
                 Exit();
             }
 
+            var currentKeyState = Keyboard.GetState();
+            var deltaTime = gameTime.ElapsedGameTime.TotalMilliseconds;
+            //var isKeyPressedSinceLastFrame = currentKeyState.IsKeyDown() && lastKeyState.IsKeyUp(key);
+
             // TODO: Add your update logic here
             /*
             override this.Update(gameTime) =
-                let currentKeyState = Keyboard.GetState()
-                let deltaTime = single(gameTime.ElapsedGameTime.TotalMilliseconds)
-
                 let isKeyPressedSinceLastFrame key =
                     currentKeyState.IsKeyDown(key) && lastKeyState.IsKeyUp(key)
 
@@ -125,15 +123,13 @@ namespace SpikeSpike
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
+
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             // TODO: Add your drawing code here
             /*
             override this.Draw(gameTime) =
-                this.GraphicsDevice.Clear Color.Black
-
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied)
-
                 let avoidedObstacles = List.sumBy (fun (o : Track) -> o.AvoidedObstacles) tracks
 
                 match gameState with
