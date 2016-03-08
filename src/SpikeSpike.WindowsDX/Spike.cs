@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 // Shared amongst projects
 // ReSharper disable once CheckNamespace
+
 namespace SpikeSpike
 {
     public class Spike
@@ -17,8 +18,8 @@ namespace SpikeSpike
             SpikeWidth = spriteTexture.SpriteWidth;
             Trigger = trigger;
             Y = startBottom - SpikeHeight;
-            DY = 0.0f;
-            SpriteTimer = 0.0f;
+            DY = 0;
+            SpriteTimer = 0;
             SpriteIndex = 0;
         }
 

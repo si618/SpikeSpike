@@ -8,9 +8,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 // Shared amongst projects
 // ReSharper disable once CheckNamespace
+
 namespace SpikeSpike
 {
     [Serializable]
@@ -192,10 +194,41 @@ namespace SpikeSpike
         public static FontFile Load(string filename)
         {
             var deserializer = new XmlSerializer(typeof (FontFile));
-            TextReader textReader = new StreamReader(filename);
-            var file = (FontFile) deserializer.Deserialize(textReader);
-            textReader.Close();
-            return file;
+            using (var textReader = new StreamReader(filename))
+            {
+                return (FontFile)deserializer.Deserialize(textReader);
+            }
+        }
+    }
+
+    public class FontRenderer
+    {
+        public FontRenderer(FontFile fontFile, Texture2D fontTexture)
+        {
+            FontFile = fontFile;
+            FontTexture = fontTexture;
+            CharacterMap = new Dictionary<char, FontChar>();
+            fontFile.Chars.ForEach(c => CharacterMap.Add((char)c.Id, c));
+        }
+
+        public FontFile FontFile { get; }
+        public Texture2D FontTexture { get; }
+        public Dictionary<char, FontChar> CharacterMap { get; }
+
+        public void DrawText(SpriteBatch spriteBatch, int x, int y, string text)
+        {
+            foreach (var c in text)
+            {
+                FontChar fc;
+                if (!CharacterMap.TryGetValue(c, out fc))
+                {
+                    continue;
+                }
+                var sourceRectange = new Rectangle(fc.X, fc.Y, fc.Width, fc.Height);
+                var position = new Vector2(x + fc.XOffset, y + fc.YOffset);
+                spriteBatch.Draw(FontTexture, position, sourceRectange, Color.White);
+                x -= fc.XAdvance;
+            }
         }
     }
 }

@@ -72,6 +72,9 @@
     <Compile Include="..\SpikeSpike.WindowsDX\SpriteTexture.cs">
       <Link>SpriteTexture.cs</Link>
     </Compile>
+    <Compile Include="..\SpikeSpike.WindowsDX\Track.cs">
+      <Link>Track.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -88,12 +91,12 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="..\SpikeSpike.WindowsDX\Icon.ico">
       <Link>Icon.ico</Link>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <!-- Specify the search path explicitly so the ResolveAssemblyReferences task picks the right ones -->
   <Target Name="BeforeResolveReferences">

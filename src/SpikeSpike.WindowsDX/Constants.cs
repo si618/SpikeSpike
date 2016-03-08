@@ -1,6 +1,6 @@
-﻿
-// Shared amongst projects
+﻿// Shared amongst projects
 // ReSharper disable once CheckNamespace
+
 namespace SpikeSpike
 {
     public static class Constants
@@ -12,6 +12,5 @@ namespace SpikeSpike
         public const int MaxObstacleWidth = 35;
         public const int MinObstacleHeight = 15;
         public const int MaxObstacleHeight = 30;
-
     }
 }

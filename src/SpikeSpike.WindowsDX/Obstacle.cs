@@ -1,9 +1,13 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 // Shared amongst projects
 // ReSharper disable once CheckNamespace
 
-namespace SpikeSpike.WindowsDX
+namespace SpikeSpike
 {
     public class Obstacle
     {
@@ -23,45 +27,28 @@ namespace SpikeSpike.WindowsDX
         public Rectangle GetBounds(Rectangle trackBounds) =>
             new Rectangle((int)X, trackBounds.Bottom - Height, Width, Height);
 
-        public void Update(float deltaTime) => X = X + Constants.Speed * deltaTime;
+        public void Update(float deltaTime) => X += Constants.Speed * deltaTime;
 
-        /*
-        type Obstacle(startX, width, height) =
-            let mutable x = startX
+        public void Draw(SpriteBatch spriteBatch, Texture2D texture, Rectangle trackBounds) =>
+            spriteBatch.Draw(texture, GetBounds(trackBounds), Color.Green);
 
-            member this.Visible
-                with get() = int(x) + width > 0
+        public static void AddNewObstacles(Rectangle trackBounds,
+            IList<Obstacle> obstacles)
+        {
+            var head = obstacles?.FirstOrDefault();
+            var isHeadFullyVisible = head != null
+                                     && head.GetBounds(trackBounds).Right < trackBounds.Right;
+            if (!isHeadFullyVisible) return;
+            var rng = new Random();
+            var x = trackBounds.Right + 200 + rng.Next(200);
+            var width = rng.Next(Constants.MinObstacleWidth, Constants.MaxObstacleWidth);
+            var height = rng.Next(Constants.MinObstacleHeight, Constants.MaxObstacleHeight);
+            obstacles.Add(new Obstacle(x, width, height));
+        }
 
-            member this.GetBounds(trackBounds : Rectangle) =
-                Rectangle(int(x), trackBounds.Bottom - height, width, height)
-
-            member this.Update(deltaTime) =
-                x <- x + speed * deltaTime
-
-            member this.Draw(spriteBatch : SpriteBatch, texture, trackBounds : Rectangle) =
-                spriteBatch.Draw(texture, this.GetBounds(trackBounds), Color.Green)
-
-        [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-        module Obstacle =
-            let rng = System.Random()
-
-            let addNewObstacles (trackBounds : Rectangle) (obstacles : Obstacle list) =
-                let isMostRecentlyAddedObstacleFullyVisible =
-                    match obstacles with
-                    | head :: tail -> head.GetBounds(trackBounds).Right < trackBounds.Right
-                    | [] -> true
-
-                if isMostRecentlyAddedObstacleFullyVisible then
-                    let x = trackBounds.Right + 200 + rng.Next(200)
-                    let width = rng.Next(minObstacleWidth, maxObstacleWidth)
-                    let height = rng.Next(minObstacleHeight, maxObstacleHeight)
-                    let newObstacle = Obstacle(single(x), width, height)
-                    newObstacle :: obstacles
-                else
-                    obstacles
-
-            let removeOldObstacles (obstacles : Obstacle list) =
-                obstacles |> List.filter (fun o -> o.Visible)
-        */
+        public static IEnumerable<Obstacle> RemoveOldObstacles(IEnumerable<Obstacle> obstacles)
+        {
+            return obstacles.Where(obstacle => obstacle.Visible);
+        }
     }
 }

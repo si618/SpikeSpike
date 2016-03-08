@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+// Shared amongst projects
+// ReSharper disable once CheckNamespace
+
 namespace SpikeSpike
 {
     public class SpriteTexture
