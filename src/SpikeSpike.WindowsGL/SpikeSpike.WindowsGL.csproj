@@ -91,11 +91,22 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\SpikeSpike.WindowsDX\GameFont.fnt">
+      <Link>GameFont.fnt</Link>
+    </None>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\SpikeSpike.WindowsDX\GameFontImage.png">
+      <Link>GameFontImage.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\SpikeSpike.WindowsDX\Icon.ico">
       <Link>Icon.ico</Link>
+    </Content>
+    <Content Include="..\SpikeSpike.WindowsDX\Spike.png">
+      <Link>Spike.png</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <!-- Specify the search path explicitly so the ResolveAssemblyReferences task picks the right ones -->

@@ -227,7 +227,7 @@ namespace SpikeSpike
                 var sourceRectange = new Rectangle(fc.X, fc.Y, fc.Width, fc.Height);
                 var position = new Vector2(x + fc.XOffset, y + fc.YOffset);
                 spriteBatch.Draw(FontTexture, position, sourceRectange, Color.White);
-                x -= fc.XAdvance;
+                x += fc.XAdvance;
             }
         }
     }
