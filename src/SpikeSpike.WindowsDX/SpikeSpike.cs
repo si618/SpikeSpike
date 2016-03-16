@@ -81,35 +81,20 @@ namespace SpikeSpike
 
             var currentKeyState = Keyboard.GetState();
             var key = currentKeyState.GetPressedKeys().LastOrDefault();
-            if (key != Keys.None)
-            {
-                UpdateGame(key, gameTime);
-            }
+            var isKeyPressedSinceLastFrame = key != Keys.None && 
+                currentKeyState.IsKeyDown(key) && _lastKeyState.IsKeyUp(key);
+            UpdateGame(gameTime, key, isKeyPressedSinceLastFrame);
             _lastKeyState = currentKeyState;
-
             base.Update(gameTime);
         }
 
-        private void UpdateGame(Keys key, GameTime gameTime)
+        private void UpdateGame(GameTime gameTime, Keys key, bool isKeyPressedSinceLastFrame)
         {
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (_gameState)
             {
-                case GameState.MainMenu:
-                    Action<int> startGame = numTracks =>
-                    {
-                        _tracks = Track.CreateTacks(_graphics.GraphicsDevice.Viewport.Bounds,
-                            _spriteTexture, numTracks);
-                        _gameState = GameState.Game;
-                    };
-                    if (key == Keys.D1) startGame(1);
-                    else if (key == Keys.D2) startGame(2);
-                    else if (key == Keys.D3) startGame(3);
-                    else if (key == Keys.D4) startGame(4);
-                    else if (key == Keys.D5) startGame(5);
-                    break;
                 case GameState.Game:
-                    if (key == Keys.P)
+                    if (isKeyPressedSinceLastFrame && key == Keys.P)
                     {
                         _gameState = GameState.GamePaused;
                     }
@@ -127,15 +112,31 @@ namespace SpikeSpike
                     }
                     break;
                 case GameState.GameOver:
-                    if (key == Keys.Space)
+                    if (isKeyPressedSinceLastFrame && key == Keys.Space)
                     {
                         _gameState = GameState.MainMenu;
                     }
                     break;
                 case GameState.GamePaused:
-                    if (key == Keys.P)
+                    if (isKeyPressedSinceLastFrame && key == Keys.P)
                     {
                         _gameState = GameState.Game;
+                    }
+                    break;
+                case GameState.MainMenu:
+                    Action<int> startGame = numTracks =>
+                    {
+                        _tracks = Track.CreateTacks(_graphics.GraphicsDevice.Viewport.Bounds,
+                            _spriteTexture, numTracks);
+                        _gameState = GameState.Game;
+                    };
+                    if (isKeyPressedSinceLastFrame)
+                    {                       
+                        if (key == Keys.D1) startGame(1);
+                        else if (key == Keys.D2) startGame(2);
+                        else if (key == Keys.D3) startGame(3);
+                        else if (key == Keys.D4) startGame(4);
+                        else if (key == Keys.D5) startGame(5);
                     }
                     break;
             }
